@@ -46,7 +46,7 @@ class VideoSpider(scrapy.spiders.Spider):
                 aid_str = ''
             aid_str += str(aid_list.pop()) + ','
             i = i + 1
-            if i == 100 or aid_list == []:
+            if i == 50 or aid_list == []:
                 i = 0
                 yield Request(
                     "https://api.bilibili.com/x/article/archives?ids=" +
@@ -102,7 +102,10 @@ class VideoSpider(scrapy.spiders.Spider):
                 item['datetime'] = date
 
                 if subChannel != '':
-                    item['channel'] = sub_channel_2_channel[subChannel]
+                    if (subChannel not in sub_channel_2_channel):
+                        item['channel'] = '未知'
+                    else:
+                        item['channel'] = sub_channel_2_channel[subChannel]
                 elif subChannel == '资讯':
                     if tid == 51:
                         item['channel'] == '番剧'

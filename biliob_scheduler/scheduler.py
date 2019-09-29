@@ -2,7 +2,7 @@
 import schedule
 import threading
 from time import sleep
-
+import datetime
 from biliob_tracer.task import ProgressTask
 import requests
 import redis
@@ -108,6 +108,12 @@ def crawlOnlineTopListData():
         t.current_value += 1
 
 
+def set_minute_level_author(mid: int):
+    db['minute_level_author'].update(
+        {'mid': mid}, {'mid': mid, 'date': datetime.datetime.now(tz="CN")})
+    pass
+
+
 def update_author():
     task_name = "生成每日作者待爬链接"
     logger.info(task_name)
@@ -160,7 +166,7 @@ def send_aids(task_name, total, cursor):
         aid_list += str(each_doc['aid']) + ','
         i += 1
         logger.info(each_doc['aid'])
-        if i == 100:
+        if i == 50:
             t.current_value += i
             redis_connection.rpush(
                 VIDEO_KEY, VIDEO_URL.format(aid=aid_list[:-1]))
@@ -169,11 +175,6 @@ def send_aids(task_name, total, cursor):
     t.current_value += i
     redis_connection.rpush(
         VIDEO_KEY, VIDEO_URL.format(aid=aid_list[:-1]))
-
-
-def run_threaded(job_func):
-    job_thread = threading.Thread(target=job_func)
-    job_thread.start()
 
 
 def sendAuthorCrawlRequest(mid):
@@ -201,13 +202,14 @@ def add_tag_task():
     coll = db['video']
     doc_filter = {'tag': {'$exists': False}}
     total = coll.find(doc_filter, {"aid": 1}).count()
-    cursor = coll.find(doc_filter,{"aid": 1}).batch_size(100)
+    cursor = coll.find(doc_filter, {"aid": 1}).batch_size(100)
     t = ProgressTask(task_name, total, collection=db['tracer'])
     url = 'https://www.bilibili.com/video/av{}'
     for each_video in cursor:
-        t.current_value +=1
+        t.current_value += 1
         aid = each_video['aid']
         redis_connection.rpush("tagAdder:start_urls", url.format(aid))
+
 
 def auto_crawl_task():
     task_name = "自动爬虫计划调度服务"
@@ -226,6 +228,11 @@ def gen_online():
     t.current_value = 1
 
 
+def run_threaded(job_func):
+    job_thread = threading.Thread(target=job_func)
+    job_thread.start()
+
+
 schedule.every().day.at('01:00').do(run_threaded, update_author)
 schedule.every().day.at('07:00').do(run_threaded, update_video)
 schedule.every().day.at('12:00').do(run_threaded, FansWatcher().watchBigAuthor)
@@ -239,7 +246,8 @@ schedule.every().wednesday.at('03:20').do(
     run_threaded, compute_video_rank_table)
 schedule.every().monday.at('03:20').do(run_threaded, calculate_author_rank)
 
-schedule.every().thursday.at('15:20').do(run_threaded, KeywordAdder().add_omitted)
+schedule.every().thursday.at('15:20').do(
+    run_threaded, KeywordAdder().add_omitted)
 
 
 schedule.every().week.do(run_threaded, update_unfocus_video)
