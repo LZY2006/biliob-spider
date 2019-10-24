@@ -1,10 +1,8 @@
-from db import settings
+from db import db
 from db import db
 import datetime
 from enum import Enum
 from scipy.interpolate import interp1d
-
-from biliob_tracer.task import ProgressTask
 
 author_coll = db['author']  # 获得collection的句柄
 video_coll = db['video']  # 获得collection的句柄
@@ -194,10 +192,13 @@ class FansWatcher(object):
             }
         ])
         print("待爬取作者数量：{}".format(count))
-        t = ProgressTask("粉丝数变动探测", total_value=count, collection=db['tracer'])
         for each_author in a:
             print(each_author['mid'])
-            t.current_value += 1
             self.__judge(each_author)
-        t.finished = True
         pass
+
+
+if __name__ == "__main__":
+    w = FansWatcher()
+    w.watchBigAuthor()
+    pass
