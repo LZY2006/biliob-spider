@@ -3,6 +3,7 @@ import datetime
 author_coll = db['author']
 authors = author_coll.find({'data.2000': {'$exists': True}})
 for each_author in authors:
+    print(each_author['name'])
     mid = each_author['mid']
     data = sorted(each_author['data'],
                   key=lambda x: x['datetime'], reverse=True)

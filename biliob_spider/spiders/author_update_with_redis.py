@@ -98,9 +98,30 @@ class AuthorUpdateWithRedis(RedisSpider):
         j = json.loads(response.body)
         archive_view = j['data']['archive']['view']
         article_view = j['data']['article']['view']
+        like = j['data']['likes']
         item = response.meta['item']
         item['data']['archiveView'] = archive_view
         item['data']['articleView'] = article_view
+        item['data']['like'] = like
+        item['c_like'] = like
+        # now = datetime.datetime.now()
+        # c = self.coll.aggregate([
+        #     {"$match": {"mid": 1850091}}, {
+        #         "$unwind": "$data"
+        #     }, {
+        #         "$match": {
+        #             "data.datetime": {"$lt": now - datetime.timedelta(1)}
+        #         }
+        #     }, {
+        #         "$limit": 1
+        #     }, {
+        #         "$project": {"datetime": "$data.datetime", "like": "$data.like", "archiveView": "$data.archiveView", "articleView": "$data.articleView"}
+        #     }
+        # ])
+        # for each in c:
+        #     delta_seconds = now.timestamp - each['datetime']
+        #     delta_fans = item['data']['fans'] - each['fans']
+        #     item['c_rate'] = int(delta_fans / delta_seconds * 86400)
         item['c_archive_view'] = int(archive_view)
         item['c_article_view'] = int(article_view)
 

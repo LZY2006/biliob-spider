@@ -6,18 +6,18 @@ from time import sleep
 from face import face
 from color import color
 
-start_date = datetime.datetime(2019, 1, 1)
-end_date = datetime.datetime.now()
+start_date = datetime.datetime(2019, 6, 1)
+end_date = datetime.datetime(2019, 11, 9)
 date_range = 30 * 24 * 60 * 60
-delta_date = 0.25 * 24 * 60 * 60
+delta_date = 0.10 * 24 * 60 * 60
 date_format = '%Y-%m-%d %H:%M'
 d = {}
 # output_file = 'D:/DataSource/B站/月结粉絲减少-2019-8-8.csv'
-output_file = 'D:/DataSource/B站/月结播放排行-2019-10-03.csv'
-field = 'cArchive_view'
-field_name = 'archiveView'
-# field = 'cFans'
-# field_name = 'fans'
+output_file = 'D:/DataSource/B站/月结粉丝排行-2019-11-09.csv'
+# field = 'cArchive_view'
+# field_name = 'archiveView'
+field = 'cFans'
+field_name = 'fans'
 current_date = start_date.timestamp()
 while (current_date < end_date.timestamp()):
     c_date = datetime.datetime.fromtimestamp(current_date).strftime(
