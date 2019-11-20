@@ -65,6 +65,7 @@ class VideoAndAuthorItem(scrapy.Item):
     pts = scrapy.Field()
     c_fans = scrapy.Field()
     c_attention = scrapy.Field()
+    c_like = scrapy.Field()
     c_archive = scrapy.Field()
     c_article = scrapy.Field()
     c_archive_view = scrapy.Field()
@@ -125,6 +126,7 @@ class AuthorItem(scrapy.Item):
     c_article = scrapy.Field()
     c_archive_view = scrapy.Field()
     c_article_view = scrapy.Field()
+    c_like = scrapy.Field()
     c_datetime = scrapy.Field()
 
 

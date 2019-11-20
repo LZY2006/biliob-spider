@@ -72,6 +72,7 @@ class StrongPipeline(object):
                     'face': item['face'],
                     'level': item['level'],
                     'cFans': item['c_fans'],
+                    'cLike': item['c_like'],
                     'official': item['official'],
                     'cArchive': item['c_archive'],
                     'cArticle': item['c_article'],
@@ -315,6 +316,7 @@ class AuthorPipeline(object):
                         'face': item['face'],
                         'level': item['level'],
                         'cFans': item['c_fans'],
+                        'cLike': item['c_like'],
                         'official': item['official'],
                     },
                     '$push': {

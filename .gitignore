@@ -7,3 +7,5 @@ mail.py
 get_data/color.py
 get_data/face.py
 .vscode/*
+biliob_analyzer/db.py
+get_data/db.py
