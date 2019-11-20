@@ -316,6 +316,7 @@ class AuthorPipeline(object):
                         'face': item['face'],
                         'level': item['level'],
                         'cFans': item['c_fans'],
+                        'cLike': item['c_like'],
                         'official': item['official'],
                     },
                     '$push': {
