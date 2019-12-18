@@ -116,7 +116,7 @@ class KeywordAdder():
 
     def refresh_all_author(self):
         authors = self.mongo_author.find(
-            {}, {'_id': 0, 'mid': 1}).batch_size(500)
+            {}, {'_id': 0, 'mid': 1}).batch_size(100)
         for each_author in authors:
             mid = each_author['mid']
             print("[mid]"+str(mid))
@@ -124,7 +124,7 @@ class KeywordAdder():
 
     def refresh_all_video(self):
         videos = self.mongo_video.find(
-            {}, {'_id': 0, 'aid': 1}).batch_size(500)
+            {}, {'_id': 0, 'aid': 1}).batch_size(100)
         for each_video in videos:
             aid = each_video['aid']
             print("[aid]"+str(aid))
@@ -134,7 +134,8 @@ class KeywordAdder():
         total_value = self.mongo_word.count_documents({})
         if self.mongo_word.count_documents({}) < 100:
             return
-        t = ProgressTask("更新查询关键词字典", total_value=total_value,collection=db['tracer'])
+        t = ProgressTask("更新查询关键词字典", total_value=total_value,
+                         collection=db['tracer'])
         d = open('./biliob_analyzer/dict.txt', 'r',
                  encoding='utf8').read().split('\n')
         for each in self.mongo_word.find():
@@ -154,3 +155,8 @@ class KeywordAdder():
         jieba.load_userdict('./biliob_analyzer/dict.txt')
         self.refresh_all_author()
         self.refresh_all_video()
+
+
+if __name__ == "__main__":
+    a = KeywordAdder()
+    a.add_omitted()
