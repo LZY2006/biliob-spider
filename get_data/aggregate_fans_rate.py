@@ -5,15 +5,15 @@ from haishoku.haishoku import Haishoku
 from time import sleep
 from face import face
 from color import color
-
-start_date = datetime.datetime(2019, 6, 1)
-end_date = datetime.datetime(2019, 11, 9)
+from get_subchannel_top_author import get_subchannel_top_author
+start_date = datetime.datetime(2019, 1, 1)
+end_date = datetime.datetime(2019, 12, 6)
 date_range = 30 * 24 * 60 * 60
-delta_date = 0.10 * 24 * 60 * 60
+delta_date = 0.25 * 24 * 60 * 60
 date_format = '%Y-%m-%d %H:%M'
 d = {}
 # output_file = 'D:/DataSource/B站/月结粉絲减少-2019-8-8.csv'
-output_file = 'D:/DataSource/B站/月结粉丝排行-2019-11-09.csv'
+output_file = 'D:/DataSource/B站/吃播涨粉最快.csv'
 # field = 'cArchive_view'
 # field_name = 'archiveView'
 field = 'cFans'
@@ -25,13 +25,32 @@ while (current_date < end_date.timestamp()):
     d[c_date] = []
     current_date += delta_date
 
-mid_list = []
-for each_author in db['author'].find({field: {'$gt': 100000}}, {'mid': 1}).batch_size(200):
-    mid_list.append(each_author['mid'])
+mid_list = [9824766]
+# for each_author in db['author'].find({field: {'$gt': 100000}}, {'mid': 1}).batch_size(200):
+#     mid_list.append(each_author['mid'])
+
+m_list = get_subchannel_top_author("美食圈", 99999)
+
+for mid in m_list:
+    author_data = db['video'].aggregate(
+        [{'$match': {'mid': mid}}, {'$group': {"_id": "$subChannel", 'count': {'$sum': 1}}}, {'$sort': {'count': -1}}])
+    author_data = list(author_data)
+    if author_data != None and len(author_data) >= 1:
+        if author_data[0]['_id'] == '美食圈':
+            mid_list.append(mid)
+        else:
+            for each_channel in author_data:
+                if each_channel['_id'] == '美食圈' and each_channel['count'] > 10:
+                    mid_list.append(mid)
+                    break
+            print(mid, author_data)
+print(len(mid_list))
 
 
 def add_data(mid):
     each_author = db['author'].find_one({'mid': mid})
+    if each_author == None:
+        return
     current_date = start_date.timestamp()
     fix = {}
     data = sorted(each_author['data'], key=lambda x: x['datetime'])

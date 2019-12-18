@@ -208,6 +208,7 @@ def add_tag_task():
     for each_video in cursor:
         t.current_value += 1
         aid = each_video['aid']
+        logger.info("待爬AV号{}".format(aid))
         redis_connection.rpush("tagAdder:start_urls", url.format(aid))
 
 
@@ -233,24 +234,24 @@ def run_threaded(job_func):
     job_thread.start()
 
 
-schedule.every().day.at('01:00').do(run_threaded, update_author)
-schedule.every().day.at('07:00').do(run_threaded, update_video)
-schedule.every().day.at('12:00').do(run_threaded, FansWatcher().watchBigAuthor)
-schedule.every().day.at('13:00').do(run_threaded, author_fans_rate_caculate)
-schedule.every().day.at('14:00').do(run_threaded, auto_add_author)
-schedule.every().day.at('16:50').do(run_threaded, auto_crawl_bangumi)
-schedule.every().day.at('22:00').do(run_threaded, auto_add_video)
-schedule.every().day.at('04:00').do(run_threaded, add_tag_task)
+if __name__ == "__main__":
+    schedule.every().day.at('01:00').do(run_threaded, update_author)
+    schedule.every().day.at('07:00').do(run_threaded, update_video)
+    schedule.every().day.at('12:00').do(run_threaded, FansWatcher().watchBigAuthor)
+    schedule.every().day.at('13:00').do(run_threaded, author_fans_rate_caculate)
+    schedule.every().day.at('14:00').do(run_threaded, auto_add_author)
+    schedule.every().day.at('16:50').do(run_threaded, auto_crawl_bangumi)
+    schedule.every().day.at('22:00').do(run_threaded, auto_add_video)
+    schedule.every().day.at('04:00').do(run_threaded, add_tag_task)
 
-schedule.every().wednesday.at('03:20').do(
-    run_threaded, compute_video_rank_table)
-schedule.every().monday.at('03:20').do(run_threaded, calculate_author_rank)
+    schedule.every().wednesday.at('03:20').do(
+        run_threaded, compute_video_rank_table)
+    schedule.every().monday.at('03:20').do(run_threaded, calculate_author_rank)
 
-schedule.every().thursday.at('15:20').do(
-    run_threaded, KeywordAdder().add_omitted)
+    schedule.every().thursday.at('15:20').do(
+        run_threaded, KeywordAdder().add_omitted)
 
-
-schedule.every().week.do(run_threaded, update_unfocus_video)
-schedule.every().hour.do(run_threaded, sendSiteInfoCrawlRequest)
-schedule.every(1).minutes.do(run_threaded, crawlOnlineTopListData)
-schedule.every(15).minutes.do(run_threaded, gen_online)
+    schedule.every().week.do(run_threaded, update_unfocus_video)
+    schedule.every().hour.do(run_threaded, sendSiteInfoCrawlRequest)
+    schedule.every(1).minutes.do(run_threaded, crawlOnlineTopListData)
+    schedule.every(15).minutes.do(run_threaded, gen_online)
