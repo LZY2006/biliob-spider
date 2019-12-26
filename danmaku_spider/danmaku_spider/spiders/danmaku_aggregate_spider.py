@@ -30,9 +30,7 @@ class DanmakuAggregateSpider(RedisSpider):
 
     def __init__(self):
         jieba.load_userdict('../biliob_analyzer/dict.txt')
-        self.client = MongoClient(env_dist['BILIOB_MONGO_SERVER'], env_dist['BILIOB_MONGO_PORT'])
-        self.client.admin.authenticate(env_dist['BILIOB_MONGO_USER'],
-                                       env_dist['BILIOB_MONGO_PASSWD'])
+        self.client = MongoClient(env_dist['BILIOB_MONGO_URL'])
         self.db = self.client['biliob']  # 获得数据库的句柄
         self.coll = self.db['video']  # 获得collection的句柄
 

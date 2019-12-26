@@ -23,9 +23,7 @@ def sentCallBack(object_id, coll):
 
 class DanmakuSpiderPipeline(object):
     def __init__(self):
-        self.client = MongoClient(env_dist['BILIOB_MONGO_SERVER'], 27017)
-        self.client.admin.authenticate(env_dist['BILIOB_MONGO_USER'],
-                                       env_dist['BILIOB_MONGO_PASSWD'])
+        self.client = MongoClient(env_dist['BILIOB_MONGO_URL'])
         self.db = self.client['biliob']
         self.redis_connection = redis.from_url(
             env_dist['BILIOB_REDIS_CONNECTION_STRING'])

@@ -18,11 +18,11 @@ authors = []
 for each_author in s:
     authors.append(each_author)
     if each_author not in face:
-
         # cursor.execute(""" SELECT * FROM author WHERE name=%s """, each_author)
         author_data = db['author'].find_one({'name': each_author}, {'face': 1})
         face[each_author] = author_data['face']
         pass
+
 with open('./get_data/face.py', 'w', encoding="utf-8-sig") as f:
     f.writelines('face = ' + str(face))
 
