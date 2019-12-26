@@ -29,13 +29,16 @@ class TagAdderSpider(RedisSpider):
 
     def __init__(self):
         self.db = db
-        self.task = SpiderTask('视频标签追加爬虫', collection=self.db['tracer'])
-        pass
 
+
+    def start_requests(self):
+            for i in self.start_urls:
+                yield Request(i, meta={
+                    'dont_redirect': True,
+                    'handle_httpstatus_list': [302]
+                }, callback=self.parse)
     def parse(self, response):
-        pass
         try:
-            self.task.crawl_count += 1
             aid = str(
                 response.url.lstrip(
                     'https://www.bilibili.com/video/av').rstrip('/'))
