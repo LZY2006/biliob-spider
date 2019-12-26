@@ -111,6 +111,7 @@ class VideoItem(scrapy.Item):
 
 class AuthorItem(scrapy.Item):
     object_id = scrapy.Field()
+    c_rate = scrapy.Field()
     mid = scrapy.Field()
     name = scrapy.Field()
     face = scrapy.Field()
