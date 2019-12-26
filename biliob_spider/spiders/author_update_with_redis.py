@@ -106,12 +106,18 @@ class AuthorUpdateWithRedis(RedisSpider):
         item['c_like'] = like
         now = datetime.datetime.now()
         c = self.coll.aggregate([
-            {"$match": {"mid": item['mid']}}, {
+            {
+                "$match": {
+                    "mid": item['mid']
+                }
+            }, {
                 "$unwind": "$data"
             }, {
                 "$match": {
                     "data.datetime": {"$gt": now - datetime.timedelta(1)}
                 }
+            }, {
+                "$sort": {"data.datetime": 1}
             }, {
                 "$limit": 1
             }, {
