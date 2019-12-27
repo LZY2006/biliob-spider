@@ -114,7 +114,7 @@ class AuthorUpdateWithRedis(RedisSpider):
                 "$unwind": "$data"
             }, {
                 "$match": {
-                    "data.datetime": {"$gt": now - datetime.timedelta(1)}
+                    "data.datetime": {"$gt": now - datetime.timedelta(1.1)}
                 }
             }, {
                 "$sort": {"data.datetime": 1}
