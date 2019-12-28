@@ -124,6 +124,7 @@ class AuthorUpdateWithRedis(RedisSpider):
                 "$project": {"datetime": "$data.datetime", "like": "$data.like", "fans": "$data.fans", "archiveView": "$data.archiveView", "articleView": "$data.articleView"}
             }
         ])
+        item['c_rate'] = 0
         for each in c:
             delta_seconds = now.timestamp() - each['datetime'].timestamp()
             delta_fans = item['data']['fans'] - each['fans']
