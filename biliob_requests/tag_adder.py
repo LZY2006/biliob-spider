@@ -53,12 +53,8 @@ class ParseThread(threading.Thread):
                 print(error)
 
 
-def funcname(self, parameter_list):
-    raise NotImplementedError
-
-
 class Spider():
-    aid_queue = queue.Queue(10000)
+    item_queue = queue.Queue(10000)
     queueLock = threading.Lock()
 
     def get_key(self):
@@ -75,7 +71,7 @@ class Spider():
 
     def __init__(self):
         for i in range(8):
-            ParseThread(self.aid_queue, self.queueLock,
+            ParseThread(self.item_queue, self.queueLock,
                         self.get_response, self.parse, self.save).start()
         self.get_key()
 
@@ -91,7 +87,7 @@ class TagSpider(Spider):
                 continue
             if aid != None:
                 self.queueLock.acquire()
-                self.aid_queue.put(aid.decode())
+                self.item_queue.put(aid.decode())
                 self.queueLock.release()
             else:
                 time.sleep(1)
@@ -110,6 +106,7 @@ class TagSpider(Spider):
         return item
 
     def save(self, item):
+        print(item['tag_list'])
         coll.update_one({
             'aid': item['aid']
         }, {

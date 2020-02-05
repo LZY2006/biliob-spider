@@ -1,11 +1,11 @@
 from db import db
 import datetime
-author_coll = db['author']
-authors = author_coll.find({'data.2000': {'$exists': True}})
-for each_author in authors:
-    print(each_author['name'])
-    mid = each_author['mid']
-    data = sorted(each_author['data'],
+video_coll = db['video']
+videos = video_coll.find({'data.2000': {'$exists': True}})
+for each_video in videos:
+    print(each_video['title'])
+    aid = each_video['aid']
+    data = sorted(each_video['data'],
                   key=lambda x: x['datetime'], reverse=True)
     c_data = data[0]
     c_date = data[0]['datetime'].strftime('%Y-%m-%d %H')
@@ -23,6 +23,6 @@ for each_author in authors:
             pass
         else:
             f_data.append(each_data)
-    author_coll.update_one({'mid': mid}, {'$set': {'data': f_data}})
+    video_coll.update_one({'aid': aid}, {'$set': {'data': f_data}})
     pass
 pass

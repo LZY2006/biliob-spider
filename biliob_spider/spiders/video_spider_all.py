@@ -1,6 +1,6 @@
 # coding=utf-8
 import scrapy
-from mail import mailer
+
 from scrapy.http import Request
 from biliob_spider.items import VideoItem
 from datetime import datetime

@@ -1,6 +1,6 @@
 #coding=utf-8
 import scrapy
-from mail import mailer
+
 from scrapy.http import Request
 from biliob_spider.items import BangumiItem
 import time
@@ -39,10 +39,6 @@ class DonghuaSpider(scrapy.spiders.Spider):
                 yield item
         except Exception as error:
             # 出现错误时打印错误日志
-            mailer.send(
-                to=["604264970@qq.com"],
-                subject="BiliobSpiderError",
-                body="{}\n{}".format(response.url, error),
-            )
+
 
 

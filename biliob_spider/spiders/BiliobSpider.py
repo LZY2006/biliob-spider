@@ -12,7 +12,7 @@ from scrapy_redis.spiders import RedisSpider
 
 from biliob_spider.items import AuthorItem
 from db import redis_connect_string, db
-from mail import mailer
+
 
 
 class BiliobSpider(scrapy.spiders.Spider):
@@ -75,11 +75,7 @@ class BiliobSpider(scrapy.spiders.Spider):
                 callback=self.parse_view)
         except Exception as error:
             # 出现错误时打印错误日志
-            mailer.send(
-                to=["604264970@qq.com"],
-                subject="BiliobSpiderError",
-                body="{}\n{}\n{}".format(item, response.url, error),
-            )
+            
             logging.error("视频爬虫在解析时发生错误")
             logging.error(response.url)
             logging.error(error)

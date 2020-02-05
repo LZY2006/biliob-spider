@@ -8,7 +8,7 @@ import json
 import logging
 from pymongo import MongoClient
 from db import db
-# from mail import mailer
+# 
 from util import sub_channel_2_channel
 
 

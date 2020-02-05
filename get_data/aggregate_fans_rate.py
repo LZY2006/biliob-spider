@@ -6,14 +6,14 @@ from time import sleep
 from face import face
 from color import color
 from get_subchannel_top_author import get_subchannel_top_author
-start_date = datetime.datetime(2019, 10, 1)
-end_date = datetime.datetime(2019, 12, 19)
+start_date = datetime.datetime(2019, 1, 1)
+end_date = datetime.datetime(2020, 1, 1, 18)
 date_range = 30 * 24 * 60 * 60
-delta_date = 0.15 * 24 * 60 * 60
+delta_date = 0.25 * 24 * 60 * 60
 date_format = '%Y-%m-%d %H:%M'
 d = {}
 # output_file = 'D:/DataSource/B站/月结粉絲减少-2019-8-8.csv'
-output_file = 'D:/DataSource/B站/月结粉丝增加19-12-19.csv'
+output_file = 'D:/DataSource/B站/年度粉丝增加 - 2019年度.csv'
 # field = 'cArchive_view'
 # field_name = 'archiveView'
 field = 'cFans'
@@ -26,25 +26,25 @@ while (current_date < end_date.timestamp()):
     current_date += delta_date
 
 mid_list = []
-for each_author in db['author'].find({field: {'$gt': 100000}}, {'mid': 1}).batch_size(200):
-    mid_list.append(each_author['mid'])
+# for each_author in db['author'].find({field: {'$gt': 100000}}, {'mid': 1}).batch_size(200):
+#     mid_list.append(each_author['mid'])
 
 # m_list = get_subchannel_top_author("美食圈", 99999)
 
-# for mid in m_list:
-#     author_data = db['video'].aggregate(
-#         [{'$match': {'mid': mid}}, {'$group': {"_id": "$subChannel", 'count': {'$sum': 1}}}, {'$sort': {'count': -1}}])
-#     author_data = list(author_data)
-#     if author_data != None and len(author_data) >= 1:
-#         if author_data[0]['_id'] == '美食圈':
-#             mid_list.append(mid)
-#         else:
-#             for each_channel in author_data:
-#                 if each_channel['_id'] == '美食圈' and each_channel['count'] > 10:
-#                     mid_list.append(mid)
-#                     break
-#             print(mid, author_data)
-# print(len(mid_list))
+for mid in m_list:
+    author_data = db['video'].aggregate(
+        [{'$match': {'mid': mid}}, {'$group': {"_id": "$subChannel", 'count': {'$sum': 1}}}, {'$sort': {'count': -1}}])
+    author_data = list(author_data)
+    if author_data != None and len(author_data) >= 1:
+        if author_data[0]['_id'] == '美食圈':
+            mid_list.append(mid)
+        else:
+            for each_channel in author_data:
+                if each_channel['_id'] == '美食圈' and each_channel['count'] > 10:
+                    mid_list.append(mid)
+                    break
+            print(mid, author_data)
+print(len(mid_list))
 
 
 def add_data(mid):
@@ -72,6 +72,8 @@ def add_data(mid):
         else:
             x.append(px[i])
             y.append(py[i])
+    if x[0] > datetime.datetime(2019, 4, 1).timestamp() and each_author['name'] in color:
+        y[0] = 0
     if len(x) <= 2:
         return None
     for index in fix:
@@ -79,29 +81,35 @@ def add_data(mid):
         while idx < len(y):
             y[idx] -= fix[index]
             idx += 1
-    interrupted_fans = interp1d(x, y, kind='linear')
+    interrupted_fans = interp1d(
+        x, y, kind='linear', bounds_error=False, fill_value=(y[0], y[-1]))
     current_date = start_date.timestamp()
     while (current_date < min(end_date.timestamp(), x[-1])):
         begin_date = current_date - date_range
+
         if begin_date <= x[0]:
             begin_date = x[0]
+
+        # TODO:
+        begin_date = datetime.datetime(2019, 1, 1).timestamp()
+
         # 出界
-        if begin_date >= x[0] and current_date < x[-1] and current_date > x[0]:
-            fans_func = interrupted_fans([begin_date, current_date])
-            delta_fans = int(fans_func[1] - fans_func[0])
-            pass
-            c_date = datetime.datetime.fromtimestamp(current_date).strftime(
-                date_format)
-            # print('{}\t{}\t{}'.format(each_author['name'], delta_fans,
-            #                           c_date))
-            # d[c_date].append((delta_fans", each_author['name']))
+        # if begin_date >= x[0] and current_date < x[-1] and current_date > x[0]:
+        fans_func = interrupted_fans([begin_date, current_date])
+        delta_fans = int(fans_func[1] - fans_func[0])
+        pass
+        c_date = datetime.datetime.fromtimestamp(current_date).strftime(
+            date_format)
+        # print('{}\t{}\t{}'.format(each_author['name'], delta_fans,
+        #                           c_date))
+        # d[c_date].append((delta_fans", each_author['name']))
 
-            d[c_date].append((each_author['name'], delta_fans,
-                              each_author['face']))
+        d[c_date].append((each_author['name'], delta_fans,
+                          each_author['face']))
 
-            if len(d[c_date]) >= 200:
-                d[c_date] = sorted(
-                    d[c_date], key=lambda x: x[1], reverse=True)[:20]
+        if len(d[c_date]) >= 200:
+            d[c_date] = sorted(
+                d[c_date], key=lambda x: x[1], reverse=True)[:20]
         current_date += delta_date
 
 

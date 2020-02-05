@@ -6,7 +6,6 @@
 # https://doc.scrapy.org/en/latest/topics/items.html
 
 import scrapy
-from mail import mailer
 
 
 class SiteItem(scrapy.Item):

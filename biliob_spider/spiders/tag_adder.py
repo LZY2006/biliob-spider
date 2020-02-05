@@ -12,7 +12,7 @@ from scrapy_redis.spiders import RedisSpider
 from biliob_spider.items import TagListItem
 from biliob_tracer.task import SpiderTask
 from db import db
-from mail import mailer
+
 
 
 class TagAdderSpider(RedisSpider):

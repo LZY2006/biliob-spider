@@ -1,6 +1,6 @@
 # coding=utf-8
 import scrapy
-from mail import mailer
+
 from scrapy.http import Request
 from biliob_spider.items import VideoItem
 from datetime import datetime
@@ -116,11 +116,7 @@ class VideoSpider(scrapy.spiders.Spider):
             # 出现错误时打印错误日志
             if r['code'] == -404:
                 return
-            mailer.send(
-                to=["604264970@qq.com"],
-                subject="BiliobSpiderError",
-                body="{}\n{}\n{}".format(item, response.url, error),
-            )
+            
             logging.error("视频爬虫在解析时发生错误")
             logging.error(item)
             logging.error(response.url)
