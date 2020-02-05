@@ -41,4 +41,4 @@ class BangumiSpider(scrapy.spiders.Spider):
                 yield item
         except Exception as error:
             # 出现错误时打印错误日志
-
+            pass

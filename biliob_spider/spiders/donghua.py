@@ -1,4 +1,4 @@
-#coding=utf-8
+# coding=utf-8
 import scrapy
 
 from scrapy.http import Request
@@ -6,6 +6,7 @@ from biliob_spider.items import BangumiItem
 import time
 import datetime
 import json
+
 
 class DonghuaSpider(scrapy.spiders.Spider):
     name = "donghua"
@@ -19,7 +20,8 @@ class DonghuaSpider(scrapy.spiders.Spider):
 
     def parse(self, response):
         try:
-            j = json.loads(response.xpath("//script[3]/text()").extract()[0][len('window.__INITIAL_STATE__='):].split(';')[0])
+            j = json.loads(response.xpath(
+                "//script[3]/text()").extract()[0][len('window.__INITIAL_STATE__='):].split(';')[0])
             for each in j['rankList']:
                 item = BangumiItem()
                 item['title'] = each['title']
@@ -39,6 +41,4 @@ class DonghuaSpider(scrapy.spiders.Spider):
                 yield item
         except Exception as error:
             # 出现错误时打印错误日志
-
-
-
+            pass
