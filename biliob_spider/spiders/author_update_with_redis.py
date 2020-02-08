@@ -84,7 +84,7 @@ class AuthorUpdateWithRedis(RedisSpider):
         except Exception as error:
             # 出现错误时打印错误日志
             self.task.crawl_failed += 1
-            
+
             logging.error("视频爬虫在解析时发生错误")
             logging.error(response.url)
             logging.error(error)

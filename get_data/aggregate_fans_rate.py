@@ -6,14 +6,14 @@ from time import sleep
 from face import face
 from color import color
 from get_subchannel_top_author import get_subchannel_top_author
-start_date = datetime.datetime(2019, 1, 1)
-end_date = datetime.datetime(2020, 1, 1, 18)
+start_date = datetime.datetime(2020, 1, 1)
+end_date = datetime.datetime(2020, 2, 7)
 date_range = 30 * 24 * 60 * 60
-delta_date = 0.25 * 24 * 60 * 60
+delta_date = 0.10 * 24 * 60 * 60
 date_format = '%Y-%m-%d %H:%M'
 d = {}
 # output_file = 'D:/DataSource/B站/月结粉絲减少-2019-8-8.csv'
-output_file = 'D:/DataSource/B站/年度粉丝增加 - 2019年度.csv'
+output_file = 'D:/DataSource/B站/月结粉丝增加-2020-1.csv'
 # field = 'cArchive_view'
 # field_name = 'archiveView'
 field = 'cFans'
@@ -26,24 +26,24 @@ while (current_date < end_date.timestamp()):
     current_date += delta_date
 
 mid_list = []
-# for each_author in db['author'].find({field: {'$gt': 100000}}, {'mid': 1}).batch_size(200):
-#     mid_list.append(each_author['mid'])
+for each_author in db['author'].find({field: {'$gt': 200000}}, {'mid': 1}).batch_size(200):
+    mid_list.append(each_author['mid'])
 
 # m_list = get_subchannel_top_author("美食圈", 99999)
 
-for mid in m_list:
-    author_data = db['video'].aggregate(
-        [{'$match': {'mid': mid}}, {'$group': {"_id": "$subChannel", 'count': {'$sum': 1}}}, {'$sort': {'count': -1}}])
-    author_data = list(author_data)
-    if author_data != None and len(author_data) >= 1:
-        if author_data[0]['_id'] == '美食圈':
-            mid_list.append(mid)
-        else:
-            for each_channel in author_data:
-                if each_channel['_id'] == '美食圈' and each_channel['count'] > 10:
-                    mid_list.append(mid)
-                    break
-            print(mid, author_data)
+# for mid in m_list:
+#     author_data = db['video'].aggregate(
+#         [{'$match': {'mid': mid}}, {'$group': {"_id": "$subChannel", 'count': {'$sum': 1}}}, {'$sort': {'count': -1}}])
+#     author_data = list(author_data)
+#     if author_data != None and len(author_data) >= 1:
+#         if author_data[0]['_id'] == '美食圈':
+#             mid_list.append(mid)
+#         else:
+#             for each_channel in author_data:
+#                 if each_channel['_id'] == '美食圈' and each_channel['count'] > 10:
+#                     mid_list.append(mid)
+#                     break
+#             print(mid, author_data)
 print(len(mid_list))
 
 
@@ -90,8 +90,8 @@ def add_data(mid):
         if begin_date <= x[0]:
             begin_date = x[0]
 
-        # TODO:
-        begin_date = datetime.datetime(2019, 1, 1).timestamp()
+        # # TODO:
+        # begin_date = datetime.datetime(2019, 1, 1).timestamp()
 
         # 出界
         # if begin_date >= x[0] and current_date < x[-1] and current_date > x[0]:
