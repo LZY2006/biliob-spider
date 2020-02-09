@@ -7,8 +7,8 @@ from face import face
 from color import color
 from get_subchannel_top_author import get_subchannel_top_author
 start_date = datetime.datetime(2020, 1, 1)
-end_date = datetime.datetime(2020, 2, 9)
-date_range = 30 * 24 * 60 * 60
+end_date = datetime.datetime(2020, 2, 9, 12)
+date_range = 7 * 24 * 60 * 60
 delta_date = 0.10 * 24 * 60 * 60
 date_format = '%Y-%m-%d %H:%M'
 d = {}
