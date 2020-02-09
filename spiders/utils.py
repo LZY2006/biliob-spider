@@ -1,6 +1,7 @@
 
 from db import redis_connect_string, redis_connection
 import redis
+from time import sleep
 
 
 def get_url_from_redis(key, redis_connection=redis_connection):
