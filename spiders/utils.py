@@ -12,3 +12,5 @@ def get_url_from_redis(key, redis_connection=redis_connection):
       url = redis_connection.lpop(key)
     if url != None:
       return url
+    else:
+      sleep(1)

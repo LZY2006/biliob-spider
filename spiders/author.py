@@ -18,7 +18,7 @@ class BiliobAuthorSpider(Spider):
 
   def gen_url(self):
     while True:
-      sleep(0.1)
+      sleep(0.125)
       url = get_url_from_redis("authorRedis:start_urls")
       yield url
 
