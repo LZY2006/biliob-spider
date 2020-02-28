@@ -24,13 +24,13 @@ class BiliobAuthorSpider(Spider):
 
   def parse(self, res):
     j = res.json()
-    try:
-      name = j['data']['card']['name']
-    except Exception as e:
+    if j['data'] == None:
       mid = int(res.url.split("=")[1].split('&')[0])
-      if 'data' not in db['author'].find_one({'mid': mid}):
+      saved_data = db['author'].find_one({'mid': mid})
+      if saved_data == None or 'data' not in saved_data:
         db['author'].remove({'mid': mid})
-        return None
+      raise Exception
+    name = j['data']['card']['name']
     mid = j['data']['card']['mid']
     sex = j['data']['card']['sex']
     face = j['data']['card']['face']
@@ -68,6 +68,12 @@ class BiliobAuthorSpider(Spider):
     view_data_res = s.get(
         "https://api.bilibili.com/x/space/upstat?mid={mid}".format(mid=mid))
     j = view_data_res.json()
+    if j['data'] == None:
+      mid = int(res.url.split("=")[1].split('&')[0])
+      saved_data = db['author'].find_one({'mid': mid})
+      if saved_data == None or 'data' not in saved_data:
+        db['author'].remove({'mid': mid})
+      raise Exception
     archive_view = j['data']['archive']['view']
     article_view = j['data']['article']['view']
     like = j['data']['likes']
@@ -146,6 +152,7 @@ if __name__ == "__main__":
   s = BiliobAuthorSpider("biliob-author-spider")
 
   sc = SimpyderConfig()
+  sc.PARSE_THREAD_NUMER = 4
   sc.LOG_LEVEL = "INFO"
   sc.USER_AGENT = FAKE_UA
   s.set_config(sc)
