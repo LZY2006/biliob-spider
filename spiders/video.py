@@ -39,6 +39,7 @@ class BiliobVideoSpider(Spider):
       like = d[each_key]['stat']['like']
       reply = d[each_key]['stat']['reply']
       current_date = datetime.datetime.now()
+      #  视频=硬币*0.4+收藏*0.3+弹幕*0.4+评论*0.4+播放*0.25+点赞*0.4+分享*0.6
       data = {
           'view': view,
           'favorite': favorite,
@@ -47,6 +48,7 @@ class BiliobVideoSpider(Spider):
           'share': share,
           'like': like,
           'reply': reply,
+          'jannchie': coin * 0.4 + favorite * 0.3 + danmaku * 0.4 + reply * 0.4 + view * 0.25 + like * 0.4 + share * 0.6,
           'datetime': current_date
       }
 
@@ -61,8 +63,11 @@ class BiliobVideoSpider(Spider):
       item['current_danmaku'] = danmaku
       item['current_coin'] = coin
       item['current_share'] = share
+      item['current_reply'] = reply
       item['current_like'] = like
       item['current_datetime'] = current_date
+      item['current_jannchie'] = coin * 0.4 + favorite * 0.3 + danmaku * \
+          0.4 + reply * 0.4 + view * 0.25 + like * 0.4 + share * 0.6,
       item['aid'] = aid
       item['mid'] = mid
       item['pic'] = pic
@@ -103,6 +108,8 @@ class BiliobVideoSpider(Spider):
             'cCoin': item['current_coin'],
             'cShare': item['current_share'],
             'cLike': item['current_like'],
+            'cReply': item['current_reply'],
+            'cJannchie': item['current_jannchie'],
             'cDatetime': item['current_datetime'],
             'author': item['author'],
             'subChannel': item['subChannel'],
@@ -120,7 +127,6 @@ class BiliobVideoSpider(Spider):
             }
         }
     }, True)
-    print(item)
     if 'object_id' in item:
       self.sentCallBack(item['object_id'], db['user_record'])
     return item
