@@ -24,7 +24,13 @@ class BiliobAuthorSpider(Spider):
 
   def parse(self, res):
     j = res.json()
-    name = j['data']['card']['name']
+    try:
+      name = j['data']['card']['name']
+    except Exception as e:
+      mid = int(res.url.split("=")[1].split('&')[0])
+      if 'data' not in db['author'].find_one({'mid': mid}):
+        db['author'].remove({'mid': mid})
+        return None
     mid = j['data']['card']['mid']
     sex = j['data']['card']['sex']
     face = j['data']['card']['face']
