@@ -140,6 +140,7 @@ if __name__ == "__main__":
   s = BiliobAuthorSpider("biliob-author-spider")
 
   sc = SimpyderConfig()
+  sc.LOG_LEVEL = "DEBUG"
   sc.USER_AGENT = FAKE_UA
   s.set_config(sc)
 
