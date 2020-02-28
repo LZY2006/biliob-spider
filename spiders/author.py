@@ -24,11 +24,13 @@ class BiliobAuthorSpider(Spider):
 
   def parse(self, res):
     j = res.json()
-    if j['data'] == None:
+    if 'data' in j and j['data'] == None:
       mid = int(res.url.split("=")[1].split('&')[0])
       saved_data = db['author'].find_one({'mid': mid})
       if saved_data == None or 'data' not in saved_data:
+        db['author_interval'].remove({'mid': mid})
         db['author'].remove({'mid': mid})
+
       raise Exception
     name = j['data']['card']['name']
     mid = j['data']['card']['mid']
@@ -73,6 +75,7 @@ class BiliobAuthorSpider(Spider):
       saved_data = db['author'].find_one({'mid': mid})
       if saved_data == None or 'data' not in saved_data:
         db['author'].remove({'mid': mid})
+        db['author_interval'].remove({'mid': mid})
       raise Exception
     archive_view = j['data']['archive']['view']
     article_view = j['data']['article']['view']
