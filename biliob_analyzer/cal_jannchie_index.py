@@ -1,4 +1,5 @@
 from db import db
+import datetime
 weight = {'coin': 0.4,
           'favorite': 0.3,
           'danmaku': 0.4,
@@ -7,8 +8,12 @@ weight = {'coin': 0.4,
           'like': 0.4,
           'share': 0.6}
 sum_weight = sum(weight.values())
+count = 0
 for video in db['video'].find():
-  print(video)
+  count += 1
+  if count % 10000 == 0:
+    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    print("[{}] 计算完毕数量：{}".format(date, count))
   for each_data in video['data']:
     if 'jannchie' not in each_data:
       jannchie = 0
