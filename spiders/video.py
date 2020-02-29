@@ -48,7 +48,7 @@ class BiliobVideoSpider(Spider):
           'share': share,
           'like': like,
           'reply': reply,
-          'jannchie': coin * 0.4 + favorite * 0.3 + danmaku * 0.4 + reply * 0.4 + view * 0.25 + like * 0.4 + share * 0.6,
+          'jannchie': int(coin * 0.4 + favorite * 0.3 + danmaku * 0.4 + reply * 0.4 + view * 0.25 + like * 0.4 + share * 0.6),
           'datetime': current_date
       }
 
