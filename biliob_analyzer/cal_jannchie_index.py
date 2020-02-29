@@ -1,5 +1,6 @@
 from db import db
 import datetime
+from time import sleep
 weight = {'coin': 0.4,
           'favorite': 0.3,
           'danmaku': 0.4,
@@ -9,7 +10,8 @@ weight = {'coin': 0.4,
           'share': 0.6}
 sum_weight = sum(weight.values())
 count = 0
-for video in db['video'].find():
+for video in db['video'].find().batch_size(100):
+  sleep(0.02)
   count += 1
   if count % 10000 == 0:
     date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
