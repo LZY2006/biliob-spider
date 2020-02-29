@@ -14,6 +14,8 @@ for video in db['video'].find():
   if count % 10000 == 0:
     date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     print("[{}] 计算完毕数量：{}".format(date, count))
+  if 'data' not in video:
+    continue
   for each_data in video['data']:
     if 'jannchie' not in each_data:
       jannchie = 0
