@@ -14,7 +14,7 @@ for video in db['video'].find():
       jannchie = 0
       temp_weight = 0
       for each_key in weight:
-        if each_key in each_data:
+        if each_key in each_data and each_data[each_key] != None:
           jannchie += weight[each_key] * each_data[each_key]
           temp_weight += weight[each_key]
       if temp_weight < sum_weight:
