@@ -67,7 +67,7 @@ class BiliobVideoSpider(Spider):
       item['current_like'] = like
       item['current_datetime'] = current_date
       item['current_jannchie'] = coin * 0.4 + favorite * 0.3 + danmaku * \
-          0.4 + reply * 0.4 + view * 0.25 + like * 0.4 + share * 0.6,
+          0.4 + reply * 0.4 + view * 0.25 + like * 0.4 + share * 0.6
       item['aid'] = aid
       item['mid'] = mid
       item['pic'] = pic
