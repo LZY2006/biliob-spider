@@ -141,9 +141,8 @@ def update_video():
 
 def gen_video_link_by_filter(task_name, doc_filter):
   coll = db['video']
-  total = coll.count_documents(doc_filter)
   cursor = coll.find(doc_filter, {"aid": 1}).batch_size(200)
-  send_aids(task_name, total, cursor)
+  send_aids(task_name, 0, cursor)
 
 
 def send_aids(task_name, total, cursor):
