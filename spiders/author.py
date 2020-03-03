@@ -18,7 +18,7 @@ class BiliobAuthorSpider(Spider):
 
   def gen_url(self):
     while True:
-      sleep(0.125)
+      sleep(0.15)
       url = get_url_from_redis("authorRedis:start_urls")
       yield url
 
@@ -155,7 +155,7 @@ if __name__ == "__main__":
   s = BiliobAuthorSpider("biliob-author-spider")
 
   sc = SimpyderConfig()
-  sc.PARSE_THREAD_NUMER = 4
+  sc.PARSE_THREAD_NUMER = 1
   sc.LOG_LEVEL = "INFO"
   sc.USER_AGENT = FAKE_UA
   s.set_config(sc)
