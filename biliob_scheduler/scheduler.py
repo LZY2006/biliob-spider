@@ -128,7 +128,7 @@ def update_author():
 def update_unfocus_video():
   task_name = "生成保守观测视频待爬链接"
   logger.info(task_name)
-  doc_filter = {'focus': False}
+  doc_filter = {}
   gen_video_link_by_filter(task_name, doc_filter)
 
 
@@ -158,7 +158,7 @@ def send_aids(task_name, total, cursor):
     i += 1
     logger.info(each_doc['aid'])
     if i == 50:
-      print(datetime.datetime.now(), '传送第{}个'.format(c))
+      logger.info('传送第{}个'.format(c))
       redis_connection.rpush(
           VIDEO_KEY, VIDEO_URL.format(aid=aid_list[:-1]))
       aid_list = ''
