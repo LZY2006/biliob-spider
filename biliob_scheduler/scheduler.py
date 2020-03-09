@@ -22,8 +22,6 @@ from biliob_tracer.task import ExistsTask
 from biliob_analyzer.video_rank import calculate_video_rank
 from biliob_analyzer.author_fans_watcher import FansWatcher
 
-from biliob_analyzer.add_keyword import KeywordAdder
-
 logging.basicConfig(level=logging.INFO,
                     format='[%(asctime)s] %(levelname)s @ %(name)s: %(message)s')
 logger = logging.getLogger(__name__)
@@ -233,9 +231,6 @@ def set_schedule():
   schedule.every().wednesday.at('03:20').do(
       run_threaded, compute_video_rank_table)
   schedule.every().monday.at('03:20').do(run_threaded, calculate_author_rank)
-
-  schedule.every().thursday.at('15:20').do(
-      run_threaded, KeywordAdder().add_omitted)
 
   schedule.every().week.do(run_threaded, update_unfocus_video)
   schedule.every().hour.do(run_threaded, sendSiteInfoCrawlRequest)
