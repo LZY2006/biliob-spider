@@ -1,5 +1,9 @@
 import jieba
 from db import db
+from time import sleep
+
+video_filter = {'aid': 1, 'channel': 1,
+                'subChannel': 1, 'title': 1, 'author': 1, 'tag': 1}
 
 
 class KeywordAdder():
@@ -9,10 +13,10 @@ class KeywordAdder():
     self.db = db
 
   def get_video_by_aid(self, aid):
-    return self.db.video.find_one({'aid': aid}, {'aid': 1, 'channel': 1, 'subChannel': 1, 'title': 1, 'author': 1})
+    return self.db.video.find_one({'aid': aid}, video_filter)
 
   def get_video(self):
-    return self.db.video.find({}, {'aid': 1, 'channel': 1, 'subChannel': 1, 'title': 1, 'author': 1})
+    return self.db.video.find({}, video_filter)
 
   def get_keyword_by_video(self, video):
     keywords = set()
@@ -26,7 +30,8 @@ class KeywordAdder():
       if key in video:
         keywords.add(video[key])
         keywords.update(jieba.lcut_for_search(video[key]))
-    keywords.difference_update({'】', '【', '·', '_', ''})
+    keywords.difference_update(
+        {'的', '】', '【', '·', '_', ' ', '~', '!', '！', '。', '.', '-', '/', '、', '丶', ' ', '"', '(', ')', '（', '）'})
     for each_word in keywords:
       jieba.add_word(each_word)
     return list(keywords)
@@ -52,8 +57,20 @@ class KeywordAdder():
     })
     return keyword
 
+  def add_all(self):
+    for each_video in self.get_video():
+      keywords = self.update_keyword_by_video(each_video)
+      print(keywords)
+
+  def auto_add(self):
+    while True:
+      sleep(10)
+      for each_video in self.db.video.find({'keyword': {'$exists': False}, 'tag': {'$exists': True}}, video_filter):
+        print(each_video['aid'])
+        pass
+
 
 if __name__ == "__main__":
   ka = KeywordAdder()
-  keywords = ka.update_keyword_by_aid(18900448)
-  print(keywords)
+  ka.auto_add()
+  pass
