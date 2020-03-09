@@ -1,7 +1,7 @@
 import jieba
 from db import db
 from time import sleep
-
+import logging
 video_filter = {'aid': 1, 'channel': 1,
                 'subChannel': 1, 'title': 1, 'author': 1, 'tag': 1}
 
@@ -19,22 +19,26 @@ class KeywordAdder():
     return self.db.video.find({}, video_filter)
 
   def get_keyword_by_video(self, video):
-    keywords = set()
-    if 'title' in video:
-      keywords.update(jieba.lcut_for_search(video['title']))
-    if 'tag' in video:
-      keywords.update(video['tag'])
-      for each_tag in video['tag']:
-        keywords.update(jieba.lcut_for_search(each_tag))
-    for key in ['channel', 'subChannel', 'author']:
-      if key in video:
-        keywords.add(video[key])
-        keywords.update(jieba.lcut_for_search(video[key]))
-    keywords.difference_update(
-        {'的', '】', '【', '·', '_', ' ', '~', '!', '！', '。', '.', '-', '/', '、', '丶', ' ', '"', '(', ')', '（', '）'})
-    for each_word in keywords:
-      jieba.add_word(each_word)
-    return list(keywords)
+    try:
+      keywords = set()
+      if 'title' in video:
+        keywords.update(jieba.lcut_for_search(video['title']))
+      if 'tag' in video:
+        keywords.update(video['tag'])
+        for each_tag in video['tag']:
+          keywords.update(jieba.lcut_for_search(each_tag))
+      for key in ['channel', 'subChannel', 'author']:
+        if key in video and video[key] != None:
+          keywords.add(video[key])
+          keywords.update(jieba.lcut_for_search(video[key]))
+      keywords.difference_update(
+          {'的', '】', '【', '·', '_', ' ', '~', '!', '！', '。', '.', '-', '/', '、', '丶', ' ', '"', '(', ')', '（', '）'})
+      for each_word in keywords:
+        jieba.add_word(each_word)
+      return list(keywords)
+    except Exception as e:
+      logging.exception(e)
+      return []
 
   def get_keyword_by_aid(self, aid):
     return self.get_keyword_by_video(self.get_video_by_aid(aid))
