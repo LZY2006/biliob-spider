@@ -14,7 +14,7 @@ from utils import sub_channel_2_channel
 class BiliobVideoSpider(Spider):
 
   def gen_url(self):
-    for each_video in db.video.find({'cJannchie': {'$exists': 1}}, {'cJannchie': 1, 'aid': 1}):
+    for each_video in db.video.find({'cJannchie': {'$exists': 1}}, {'cJannchie': 1, 'aid': 1}).batch_size(10):
       print(each_video['cJannchie'])
       sleep(0.125)
       url = "https://api.bilibili.com/x/article/archives?ids={}".format(
