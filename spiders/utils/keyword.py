@@ -2,6 +2,7 @@ import jieba
 from db import db
 from time import sleep
 import logging
+import datetime
 video_filter = {'aid': 1, 'channel': 1,
                 'subChannel': 1, 'title': 1, 'author': 1, 'tag': 1}
 
@@ -73,7 +74,8 @@ class KeywordAdder():
     while True:
       sleep(10)
       for each_video in self.db.video.find({'keyword': {'$exists': False}, 'tag': {'$exists': True}}, video_filter):
-        print(each_video['aid'])
+        keywords = self.update_keyword_by_video(each_video)
+        print('[{}] {}'.format(datetime.datetime.now(), each_video['aid']))
         pass
 
 
