@@ -17,7 +17,11 @@ class KeywordAdder():
     return self.db.video.find_one({'aid': aid}, video_filter)
 
   def get_video(self):
-    return self.db.video.find({}, video_filter)
+    try:
+      return self.db.video.find({}, video_filter).batch_size(100)
+    except Exception as e:
+      logging.excetion(e)
+      return self.db.video.find({}, video_filter).batch_size(100)
 
   def get_keyword_by_video(self, video):
     try:
