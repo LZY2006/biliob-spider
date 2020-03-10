@@ -2,7 +2,6 @@ import jieba
 from db import db
 from time import sleep
 import logging
-import datetime
 video_filter = {'aid': 1, 'channel': 1,
                 'subChannel': 1, 'title': 1, 'author': 1, 'tag': 1}
 
@@ -17,11 +16,7 @@ class KeywordAdder():
     return self.db.video.find_one({'aid': aid}, video_filter)
 
   def get_video(self):
-    try:
-      return self.db.video.find({}, video_filter).batch_size(100)
-    except Exception as e:
-      logging.excetion(e)
-      return self.db.video.find({}, video_filter).batch_size(100)
+    return self.db.video.find({}, video_filter, no_cursor_timeout=True).batch_size(100)
 
   def get_keyword_by_video(self, video):
     try:
@@ -50,36 +45,36 @@ class KeywordAdder():
 
   def update_keyword_by_aid(self, aid):
     keyword = self.get_keyword_by_aid(aid)
-    self.update_keyword(aid, keyword)
-
+    self.db.video.update({'aid': aid}, {
+        '$set': {
+            'keyword': keyword
+        }
+    })
     return keyword
 
   def update_keyword_by_video(self, video):
     keyword = self.get_keyword_by_video(video)
-    self.update_keyword(video['aid'], keyword)
+    self.db.video.update({'aid': video['aid']}, {
+        '$set': {
+            'keyword': keyword
+        }
+    })
     return keyword
 
-  def update_keyword(self, aid, keyword):
-    try:
-      self.db.video.update({'aid': aid}, {
-          '$set': {
-              'keyword': keyword
-          }
-      })
-    except Exception as e:
-      logging.exception(e)
-
   def add_all(self):
-    for each_video in self.get_video():
-      keywords = self.update_keyword_by_video(each_video)
-      print(keywords)
+    cursor = self.get_video()
+    try:
+      for each_video in cursor:
+        keywords = self.update_keyword_by_video(each_video)
+        print(keywords)
+    finally:
+      cursor.close()
 
   def auto_add(self):
     while True:
       sleep(10)
       for each_video in self.db.video.find({'keyword': {'$exists': False}, 'tag': {'$exists': True}}, video_filter):
-        keywords = self.update_keyword_by_video(each_video)
-        print('[{}] {}'.format(datetime.datetime.now(), each_video['aid']))
+        print(each_video['aid'])
         pass
 
 
