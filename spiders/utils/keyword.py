@@ -81,6 +81,6 @@ class KeywordAdder():
 
 if __name__ == "__main__":
   ka = KeywordAdder()
-  # ka.add_all()
+  ka.add_all()
   ka.auto_add()
   pass
