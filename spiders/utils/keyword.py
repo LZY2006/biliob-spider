@@ -19,6 +19,9 @@ class KeywordAdder():
   def get_video(self):
     return self.db.video.find({}, video_filter, no_cursor_timeout=True).batch_size(100)
 
+  def get_video_range(self, start, end):
+    return self.db.video.find({'aid': {'$lte': end, '$gte': start}}, video_filter, no_cursor_timeout=True).batch_size(100)
+
   def get_keyword_by_video(self, video):
     try:
       keywords = set()
@@ -71,6 +74,17 @@ class KeywordAdder():
     finally:
       cursor.close()
 
+  def add_range(self, start, end):
+    while start <= end:
+      cursor = self.get_video_range(start, start+100)
+      try:
+        for each_video in cursor:
+          keywords = self.update_keyword_by_video(each_video)
+          print('[{}] {}'.format(datetime.datetime.now(), each_video['aid']))
+      finally:
+        cursor.close()
+      start += 100
+
   def auto_add(self):
     while True:
       sleep(10)
@@ -84,6 +98,6 @@ class KeywordAdder():
 
 if __name__ == "__main__":
   ka = KeywordAdder()
-  ka.add_all()
+  ka.add_range(52602672, 81370464)
   ka.auto_add()
   pass

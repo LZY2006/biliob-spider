@@ -15,11 +15,13 @@ class BiliobVideoSpider(Spider):
 
   def gen_url(self):
     try:
-      cursor = db.video.find({'cJannchie': {'$exists': 1}}, {
+      cursor = db.video.find({'cJannchie.0': {'$exists': 1}}, {
                              'cJannchie': 1, 'aid': 1}, no_cursor_timeout=True).batch_size(10)
       for each_video in cursor:
-        print(each_video['cJannchie'])
         sleep(0.125)
+        print(each_video['cJannchie'])
+        db.video.update_one({'aid': each_video['aid']}, {
+                            '$set': {'cJannchie': each_video['cJannchie'][0]}})
         url = "https://api.bilibili.com/x/article/archives?ids={}".format(
             each_video['aid'])
         yield url
