@@ -33,7 +33,7 @@ class KeywordAdder():
           keywords.add(video[key])
           keywords.update(jieba.lcut_for_search(video[key]))
       keywords.difference_update(
-          {'的', '】', '【', '·', '_', ' ', '~', '!', '！', '。', '.', '-', '/', '、', '丶', ' ', '"', '(', ')', '（', '）'})
+          {'的', '】', '我', '了', '你', "？", "！", '【', '·', '_', ' ', '~', '!', '！', '。', '.', '-', '/', '、', '丶', ' ', '"', '(', ')', '（', '）'})
       for each_word in keywords:
         jieba.add_word(each_word)
       return list(keywords)
@@ -74,9 +74,12 @@ class KeywordAdder():
   def auto_add(self):
     while True:
       sleep(10)
-      for each_video in self.db.video.find({'keyword': {'$exists': False}, 'tag': {'$exists': True}}, video_filter):
-        print('[{}] {}'.format(datetime.datetime.now(), each_video['aid']))
-        self.update_keyword_by_video(each_video)
+      try:
+        for each_video in self.db.video.find({'keyword': {'$exists': False}, 'tag': {'$exists': True}}, video_filter):
+          print('[{}] {}'.format(datetime.datetime.now(), each_video['aid']))
+          self.update_keyword_by_video(each_video)
+      except Exception as e:
+        logging.exception(e)
 
 
 if __name__ == "__main__":

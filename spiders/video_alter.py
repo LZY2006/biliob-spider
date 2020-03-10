@@ -12,15 +12,13 @@ from utils import sub_channel_2_channel
 
 
 class BiliobVideoSpider(Spider):
-  def sentCallBack(self, object_id, coll):
-    if object_id != None and object_id != 'null':
-      coll.update_one({'_id': ObjectId(object_id)}, {
-          '$set': {'isExecuted': True}})
 
   def gen_url(self):
-    while True:
+    for each_video in db.video.find({'cJannchie': {'$exists': 1}}, {'cJannchie': 1, 'aid': 1}):
+      print(each_video['cJannchie'])
       sleep(0.125)
-      url = get_url_from_redis("videoRedis:start_urls")
+      url = "https://api.bilibili.com/x/article/archives?ids={}".format(
+          each_video['aid'])
       yield url
 
   def parse(self, res):
@@ -131,8 +129,6 @@ class BiliobVideoSpider(Spider):
             }
         }
     }, True)
-    if 'object_id' in item:
-      self.sentCallBack(item['object_id'], db['user_record'])
     return item
 
 
