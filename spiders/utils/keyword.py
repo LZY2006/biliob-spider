@@ -45,21 +45,24 @@ class KeywordAdder():
 
   def update_keyword_by_aid(self, aid):
     keyword = self.get_keyword_by_aid(aid)
-    self.db.video.update({'aid': aid}, {
-        '$set': {
-            'keyword': keyword
-        }
-    })
+    self.update_keyword(aid, keyword)
+
     return keyword
 
   def update_keyword_by_video(self, video):
     keyword = self.get_keyword_by_video(video)
-    self.db.video.update({'aid': video['aid']}, {
-        '$set': {
-            'keyword': keyword
-        }
-    })
+    self.update_keyword(video['aid'], keyword)
     return keyword
+
+  def update_keyword(self, aid, keyword):
+    try:
+      self.db.video.update({'aid': aid}, {
+          '$set': {
+              'keyword': keyword
+          }
+      })
+    except Exception as e:
+      logging.exception(e)
 
   def add_all(self):
     for each_video in self.get_video():
@@ -76,6 +79,6 @@ class KeywordAdder():
 
 if __name__ == "__main__":
   ka = KeywordAdder()
-  ka.add_all()
+  # ka.add_all()
   ka.auto_add()
   pass
