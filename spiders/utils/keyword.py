@@ -39,7 +39,7 @@ class KeywordAdder():
           {'的', '】', '我', '了', '你', "？", "！", '【', '·', '_', ' ', '~', '!', '！', '。', '.', '-', '/', '、', '丶', ' ', '"', '(', ')', '（', '）'})
       for each_word in keywords:
         jieba.add_word(each_word)
-      return list(keywords)
+      return list(map(lambda x: x.lower(), keywords))
     except Exception as e:
       logging.exception(e)
       return []
@@ -49,7 +49,7 @@ class KeywordAdder():
 
   def update_keyword_by_aid(self, aid):
     keyword = self.get_keyword_by_aid(aid)
-    self.db.video.update({'aid': aid}, {
+    self.db.video.update_one({'aid': aid}, {
         '$set': {
             'keyword': keyword
         }
@@ -58,7 +58,7 @@ class KeywordAdder():
 
   def update_keyword_by_video(self, video):
     keyword = self.get_keyword_by_video(video)
-    self.db.video.update({'aid': video['aid']}, {
+    self.db.video.update_one({'aid': video['aid']}, {
         '$set': {
             'keyword': keyword
         }
@@ -98,6 +98,6 @@ class KeywordAdder():
 
 if __name__ == "__main__":
   ka = KeywordAdder()
-  ka.add_range(52602672, 81370464)
+  ka.add_range(52602672, 69158731)
   ka.auto_add()
   pass
