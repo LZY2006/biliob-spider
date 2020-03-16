@@ -7,17 +7,19 @@ from face import face
 from color import color
 from get_subchannel_top_author import get_subchannel_top_author
 start_date = datetime.datetime(2020, 1, 1)
-end_date = datetime.datetime(2020, 2, 9, 12)
+end_date = datetime.datetime(2020, 3, 13, 18)
 date_range = 7 * 24 * 60 * 60
 delta_date = 0.10 * 24 * 60 * 60
 date_format = '%Y-%m-%d %H:%M'
 d = {}
 # output_file = 'D:/DataSource/B站/月结粉絲减少-2019-8-8.csv'
-output_file = 'D:/DataSource/B站/月结粉丝增加-2020-1.csv'
+output_file = './月结点赞增加-2020-2.csv'
 # field = 'cArchive_view'
 # field_name = 'archiveView'
-field = 'cFans'
-field_name = 'fans'
+field = 'cLike'
+field_name = 'like'
+# field = 'cFans'
+# field_name = 'fans'
 current_date = start_date.timestamp()
 while (current_date < end_date.timestamp()):
   c_date = datetime.datetime.fromtimestamp(current_date).strftime(
@@ -26,7 +28,7 @@ while (current_date < end_date.timestamp()):
   current_date += delta_date
 
 mid_list = []
-for each_author in db['author'].find({field: {'$gt': 200000}}, {'mid': 1}).batch_size(200):
+for each_author in db['author'].find({"cFans": {'$gt': 180000}}, {'mid': 1}).batch_size(200):
   mid_list.append(each_author['mid'])
 
 # m_list = get_subchannel_top_author("美食圈", 99999)
@@ -72,6 +74,8 @@ def add_data(mid):
     else:
       x.append(px[i])
       y.append(py[i])
+  if len(x) == 0:
+    return
   if x[0] > datetime.datetime(2019, 4, 1).timestamp() and each_author['name'] in color:
     y[0] = 0
   if len(x) <= 2:
