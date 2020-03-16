@@ -4,4 +4,5 @@ for each_bangumi in db.bangumi.find({}, {'sid': 1}):
   while count > 1:
     db.bangumi.delete_one({'sid': each_bangumi['sid']})
     print(each_bangumi['sid'])
+    count -= 1
     pass
