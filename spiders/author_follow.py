@@ -31,28 +31,27 @@ class BiliobAuthorFollowSpider(Spider):
         sleep(10)
 
   def parse(self, res):
-    aid = str(
-        res.url.lstrip(
-            'https://www.bilibili.com/video/av').rsplit('?')[0])
-    tagName = res.xpath("//li[@class='tag']/a/text()")
-    item = {}
-    item['aid'] = int(aid)
-    item['tag_list'] = []
-    if tagName != []:
-      ITEM_NUMBER = len(tagName)
-      for i in range(0, ITEM_NUMBER):
-        item['tag_list'].append(tagName[i])
-      return item
+    j = res.json()
+    item = {
+        'mid': int(res.url.split('?')[1].split('&')[0].split('=')[1]),
+        'follows': []
+    }
+    for each_member in j['data']['list']:
+      item['follows'].append(each_member['mid'])
+    return item
 
   def save(self, item):
-    pass
+    db.author.update_one({'mid': item['mid']}, {'$addToSet': {
+        'follows': {'$each': item['follows']}
+    }})
     return item
 
 
 if __name__ == "__main__":
   s = BiliobAuthorFollowSpider("biliob-author-follow-spider")
   sc = SimpyderConfig()
-  sc.PARSE_THREAD_NUMER = 8
+  sc.PARSE_THREAD_NUMER = 4
+  sc.DOWNLOAD_INTERVAL = 1
   sc.LOG_LEVEL = "INFO"
   sc.USER_AGENT = FAKE_UA
   s.set_config(sc)
